@@ -7,7 +7,7 @@ from ..models.entities import Book
 
 # Models
 from ..models.BookModel import BookModel
-
+from ..models.validations.BookValidations import validate_request
 
 mainBook = Blueprint('book_blueprint', __name__)
 bookModel = BookModel()
@@ -46,6 +46,8 @@ def search_books():
 def create_book():
     try:
         data = request.get_json()
+        validate_request(data)
+
         title = data.get('title')
         author = data.get('author')
         year = data.get('year')
@@ -53,6 +55,10 @@ def create_book():
         new_book = bookModel.add_book(title, author, year)
 
         return jsonify(new_book.to_json()), 201
+
+    except ValueError as ex:
+        return jsonify({"message": str(ex)}), 400
+
     except Exception as ex:
         return jsonify({"message": str(ex)}), 500
 
