@@ -11,6 +11,14 @@ class Book(Base):
     author = Column(String, nullable=False)
     year = Column(Integer, nullable=False)
 
+    def to_json(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'author': self.author,
+            'year': self.year
+        }
+
 engine = create_engine('sqlite:///books.db')
 Base.metadata.create_all(engine)
 
